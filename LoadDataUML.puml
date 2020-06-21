@@ -1,0 +1,39 @@
+@startuml
+
+actor User
+
+box "Client"
+participant index.html as index
+participant PhoneBook.js as PhoneBook
+end box
+
+box "Server"
+participant "PhoneBook\nController" as PhoneBookController
+participant "ContactTo\nContactDtoConverter" as Converter
+participant ContactService
+participant ContactDao
+participant GenericDao
+end box
+
+database DataBase
+
+==Отображение==
+
+User->index: Load/Reload
+index->PhoneBook: get rows
+PhoneBook->PhoneBookController: loadData()
+PhoneBookController->ContactService: getAllContacts()
+ContactService->ContactDao: getAllContacts()
+ContactDao->GenericDao: findAll()
+GenericDao->DataBase: query(select)
+DataBase-->GenericDao: List<Contact>
+GenericDao-->ContactDao: List<Contact>
+ContactDao-->ContactService: List<Contact>
+ContactService-->PhoneBookController: List<Contact>
+PhoneBookController->Converter: convert(List<Contact>)
+Converter-->PhoneBookController: ContactDto
+PhoneBookController-->PhoneBook: ContactDto
+PhoneBook-->index: rows[]
+index-->User: Contacts list
+
+@enduml
