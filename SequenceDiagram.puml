@@ -1,0 +1,26 @@
+@startuml
+actor User
+participant "Client\n (browser)" as Client
+participant Server
+database Database
+
+==Display==
+User->Client: load contacts
+Client->Server: getContacts
+Server->Database: select
+Database-->Server: contactList
+Server-->Client: contactList
+Client-->User: contactList
+
+==Add==
+User->Client: add contact
+Client->Server: addContact
+Server->Database: create
+Server-->Client: ContactValidation
+
+==Delete==
+User->Client: delete contact
+Client->Server: deleteContact
+Server->Database: update
+
+@enduml
